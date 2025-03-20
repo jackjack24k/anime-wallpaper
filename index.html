@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Image Background</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            transition: background-color 1.5s ease;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            background-color: #333;
+        }
+        
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover:not(:disabled) {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .cooldown {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            transform: translateX(-100%);
+            animation: cooldown 5s linear forwards;
+        }
+        
+        @keyframes cooldown {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+        }
+        
+        #loading-indicator {
+            display: none;
+            margin-bottom: 15px;
+            font-style: italic;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        #image-container {
+            margin-top: 20px;
+            transition: transform 0.5s ease;
+        }
+        
+        #image-container:hover {
+            transform: scale(1.02);
+        }
+        
+        img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+        }
+        
+        .loading {
+            opacity: 0.5;
+        }
+        
+        h1 {
+            margin-top: 0;
+            font-size: 2.2rem;
+            background: white;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Random Image Background</h1>
+        <p>Click the button to change the image and background</p>
+        <button id="change-image">Change Image</button>
+        <div id="loading-indicator">Loading...</div>
+        <div id="image-container">
+            <img id="random-image" src="https://picsum.photos/600/400" alt="Random Image">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('change-image');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            
+            button.addEventListener('click', function() {
+                setRandomImage();
+                
+                // Add cooldown animation
+                button.disabled = true;
+                const cooldown = document.createElement('div');
+                cooldown.className = 'cooldown';
+                button.appendChild(cooldown);
+                
+                setTimeout(() => {
+                    button.disabled = false;
+                    if (cooldown.parentNode === button) {
+                        button.removeChild(cooldown);
+                    }
+                }, 5000);
+            });
+            
+            // Load initial image
+            setRandomImage();
+            
+            function setRandomImage() {
+                // Show loading state
+                const button = document.getElementById('change-image');
+                const loadingIndicator = document.getElementById('loading-indicator');
+                button.classList.add('loading');
+                loadingIndicator.style.display = 'block';
+                
+                // Generate a random ID for the image to avoid caching
+                const randomId = Math.floor(Math.random() * 10000);
+                const imageUrl = `https://picsum.photos/800/600?random=${randomId}`;
+                
+                // First, load the image
+                const img = new Image();
+                img.crossOrigin = "Anonymous"; // Required for extracting colors
+                img.onload = function() {
+                    // Once the image is loaded, update the displayed image
+                    document.getElementById('random-image').src = imageUrl;
+                    
+                    // Extract color from image
+                    const color = getAverageColor(img);
+                    
+                    // Apply color as background
+                    document.body.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+                    
+                    // Hide loading state
+                    button.classList.remove('loading');
+                    loadingIndicator.style.display = 'none';
+                };
+                
+                img.src = imageUrl;
+            }
+            
+            function getAverageColor(imgEl) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                const width = 20; // Reduced for performance
+                const height = 20; // Reduced for performance
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Draw image to canvas at reduced size for faster processing
+                context.drawImage(imgEl, 0, 0, width, height);
+                
+                // Get image data
+                let data;
+                try {
+                    data = context.getImageData(0, 0, width, height).data;
+                } catch(e) {
+                    // Fallback if CORS issues
+                    return {r: 100, g: 100, b: 100};
+                }
+                
+                let r = 0, g = 0, b = 0;
+                let count = 0;
+                
+                // Only sample every 4th pixel for better performance
+                for (let i = 0; i < data.length; i += 16) {
+                    r += data[i];
+                    g += data[i+1];
+                    b += data[i+2];
+                    count++;
+                }
+                
+                return {
+                    r: Math.floor(r/count),
+                    g: Math.floor(g/count),
+                    b: Math.floor(b/count)
+                };
+            }
+        });
+    </script>
+</body>
+</html>
