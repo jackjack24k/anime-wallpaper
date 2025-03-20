@@ -21,7 +21,7 @@
         transition: background-color 1s ease;
         color: #555;
         background-color: #ffecf6;
-        background-image: linear-gradient(45deg, #ffecf6, #e5f5ff);
+        background-image: linear-gradient(45deg, #ffffff, #e5f5ff);
         overflow-x: hidden;
       }
 
@@ -415,6 +415,39 @@
           width: 100%;
         }
       }
+      .coffee-section {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .coffee-section p {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .coffee-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #ffdd57;
+        color: #000;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .coffee-button:hover {
+        background-color: #ffcc33;
+      }
+
+      .coffee-icon {
+        font-size: 20px;
+      }
     </style>
   </head>
   <body>
@@ -448,7 +481,16 @@
       <span class="heart">♥</span>
       <span class="favorite-count">0</span>
     </div>
-
+    <div class="coffee-section">
+      <p>Enjoy AniSpin? Support me!</p>
+      <a
+        href="https://buymeacoffee.com/shivenkashyap"
+        target="_blank"
+        class="coffee-button"
+      >
+        <span class="coffee-icon">☕</span> Buy Me A Coffee
+      </a>
+    </div>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const button = document.getElementById("change-image");
