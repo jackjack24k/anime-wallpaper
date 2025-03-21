@@ -1,694 +1,771 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Random Anime Image</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Permanent+Marker&display=swap" rel="stylesheet">
-        <style>
-                body {
-                        font-family: 'Poppins', sans-serif;
-                        margin: 10px;
-                        padding: 0;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        min-height: 100vh;
-                        transition: background-color 1.5s ease;
-                        color: #555;
-                        background-color: #ffecf6;
-                        background-image: linear-gradient(45deg, #ffecf6, #e5f5ff);
-                        overflow-x: hidden;
-                }
-                
-                .container {
-                        background-color: white;
-                        padding: 30px;
-                        border-radius: 20px;
-                        text-align: center;
-                        max-width: 600px;
-                        box-shadow: 0 15px 40px rgba(255, 182, 223, 0.4);
-                        backdrop-filter: blur(10px);
-                        border: 2px solid rgba(255, 255, 255, 0.5);
-                        transform: translateY(0);
-                        transition: transform 0.3s ease, box-shadow 0.3s ease;
-                        position: relative;
-                        color: #333;
-                }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Anime Image</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Permanent+Marker&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 10px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        transition: background-color 1s ease;
+        color: #555;
+        background-color: #ffecf6;
+        background-image: linear-gradient(45deg, #ffecf6, #e5f5ff);
+        overflow-x: hidden;
+      }
 
-                .container::before, .container::after {
-                        content: '';
-                        position: absolute;
-                        width: 50px;
-                        height: 50px;
-                        border: 3px solid #ff97d5;
-                        z-index: -1;
-                }
-                
-                .container::before {
-                        top: -15px;
-                        left: -15px;
-                        border-right: none;
-                        border-bottom: none;
-                }
-                
-                .container::after {
-                        bottom: -15px;
-                        right: -15px;
-                        border-left: none;
-                        border-top: none;
-                }
+      .container {
+        padding: 25px 20px;
+        border-radius: 20px;
+        text-align: center;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 15px 40px rgba(255, 182, 223, 0.4);
+        background-color: white;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        transform: translateY(0);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        color: #333;
+        margin: 20px auto;
+      }
 
-                .container:hover {
-                        transform: translateY(-5px);
-                        box-shadow: 0 20px 50px rgba(255, 182, 223, 0.5);
-                }
-                
-                button {
-                        padding: 14px 28px;
-                        font-size: 18px;
-                        background: linear-gradient(45deg, #ff97d5, #a6d7ff);
-                        color: #ffffff;
-                        border: none;
-                        border-radius: 50px;
-                        cursor: pointer;
-                        margin-bottom: 20px;
-                        transition: all 0.3s;
-                        position: relative;
-                        overflow: hidden;
-                        box-shadow: 0 6px 15px rgba(255, 182, 223, 0.4);
-                        font-weight: bold;
-                        text-transform: uppercase;
-                        letter-spacing: 1px;
-                }
-                
-                button:hover:not(:disabled) {
-                        transform: translateY(-4px) scale(1.05);
-                        box-shadow: 0 10px 25px rgba(255, 151, 213, 0.5);
-                }
-                
-                button:active:not(:disabled) {
-                        transform: translateY(1px);
-                        box-shadow: 0 4px 10px rgba(255, 151, 213, 0.3);
-                }
-                
-                button:disabled {
-                        background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
-                        cursor: not-allowed;
-                        opacity: 0.7;
-                }
+      .container::before,
+      .container::after {
+        content: "";
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border: 3px solid #ffffff;
+        z-index: -1;
+      }
 
-                .download-btn {
-                        background: linear-gradient(45deg, #a6d7ff, #c9abff);
-                        margin-top: 20px;
-                        margin-bottom: 0;
-                }
-                
-                .favorite-btn {
-                        background: linear-gradient(45deg, #ffb6df, #ffd700);
-                        margin-top: 20px;
-                        margin-bottom: 0;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                }
-                
-                .favorite-btn .heart {
-                        display: inline-block;
-                        margin-right: 8px;
-                        font-size: 20px;
-                        transition: transform 0.3s;
-                }
-                
-                .favorite-btn.active .heart {
-                        color: #ff3366;
-                        transform: scale(1.2);
-                }
-                
-                .favorite-btn.active {
-                        background: linear-gradient(45deg, #ff6eb5, #ffcc00);
-                }
-                
-                .button-group {
-                        display: flex;
-                        gap: 15px;
-                        justify-content: center;
-                        margin-top: 20px;
-                }
-                
-                .cooldown {
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                        height: 100%;
-                        width: 100%;
-                        background-color: rgba(255, 255, 255, 0.5);
-                        transform: translateX(-100%);
-                        animation: cooldown 5s linear forwards;
-                }
-                
-                @keyframes cooldown {
-                        0% { transform: translateX(-100%); }
-                        100% { transform: translateX(0); }
-                }
-                
-                #loading-indicator {
-                        display: none;
-                        margin-bottom: 15px;
-                        font-style: italic;
-                        animation: pulse 1.5s infinite;
-                        color: #ff97d5;
-                }
-                
-                @keyframes pulse {
-                        0% { opacity: 0.5; transform: scale(0.98); }
-                        50% { opacity: 1; transform: scale(1.05); }
-                        100% { opacity: 0.5; transform: scale(0.98); }
-                }
-                
-                #image-container {
-                        margin-top: 20px;
-                        transition: transform 0.5s ease;
-                        position: relative;
-                }
-                
-                #image-container:hover {
-                        transform: scale(1.03);
-                }
-                
-                img {
-                        max-width: 100%;
-                        border-radius: 12px;
-                        box-shadow: 0 8px 20px rgba(255, 182, 223, 0.4);
-                        transition: all 0.5s ease;
-                        border: 3px solid rgba(255, 255, 255, 0.2);
-                }
-                
-                .loading {
-                        opacity: 0.5;
-                }
-                
-                h1 {
-                        margin-top: 0;
-                        font-size: 2.5rem;
-                        font-family: 'Permanent Marker', cursive;
-                        background: linear-gradient(45deg, #ff97d5, #a6d7ff);
-                        -webkit-background-clip: text;
-                        background-clip: text;
-                        color: transparent;
-                        letter-spacing: 1px;
-                        margin-bottom: 15px;
-                }
+      .container::before {
+        top: -15px;
+        left: -15px;
+        border-right: none;
+        border-bottom: none;
+      }
 
-                p {
-                        color: #666;
-                        margin-bottom: 25px;
-                }
+      .container::after {
+        bottom: -15px;
+        right: -15px;
+        border-left: none;
+        border-top: none;
+      }
 
-                .sparkles {
-                        position: absolute;
-                        width: 100%;
-                        height: 100%;
-                        pointer-events: none;
-                        z-index: -1;
-                }
+      .container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(255, 182, 223, 0.5);
+      }
 
-                .sparkle {
-                        position: absolute;
-                        background-color: #ffd9f0;
-                        width: 3px;
-                        height: 3px;
-                        border-radius: 50%;
-                        opacity: 0;
-                        animation: sparkle-animation 2s infinite;
-                }
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        background: linear-gradient(45deg, #ff97d5, #a6d7ff);
+        color: #ffffff;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        margin-bottom: 15px;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 6px 15px rgba(255, 182, 223, 0.4);
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
 
-                @keyframes sparkle-animation {
-                        0% { opacity: 0; transform: scale(0); }
-                        50% { opacity: 1; transform: scale(1); }
-                        100% { opacity: 0; transform: scale(0); }
-                }
-                
-                #artist-info {
-                    position: absolute;
-                    bottom: 5px;
-                    right: 5px;
-                    background-color: #ffffffcc;
-                    padding: 5px 10px;
-                    border-radius: 20px;
-                    font-size: 12px;
-                    color: #777;
-                    box-shadow: 0 2px 10px rgba(255, 151, 213, 0.3);
-                    border: 1px solid #ffcce9;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                }
-                
-                #artist-info:hover {
-                    background-color: rgba(255, 255, 255, 0.95);
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 12px rgba(255, 151, 213, 0.5);
-                }
-                
-                #favorites-panel {
-                    display: none;
-                    position: fixed;
-                    top: 0;
-                    right: 0;
-                    height: 100vh;
-                    width: 0;
-                    background-color: white;
-                    box-shadow: -5px 0 20px rgba(255, 151, 213, 0.3);
-                    z-index: 1000;
-                    overflow-y: auto;
-                    transition: width 0.3s ease;
-                    padding: 20px;
-                    box-sizing: border-box;
-                }
-                
-                #favorites-panel.active {
-                    display: block;
-                    width: 320px;
-                }
-                
-                .favorites-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 20px;
-                }
-                
-                .close-favorites {
-                    background: none;
-                    border: none;
-                    font-size: 24px;
-                    cursor: pointer;
-                    color: #ff97d5;
-                    padding: 0;
-                    margin: 0;
-                }
-                
-                .favorite-item {
-                    margin-bottom: 20px;
-                    border-radius: 10px;
-                    overflow: hidden;
-                    box-shadow: 0 5px 15px rgba(255, 151, 213, 0.2);
-                    position: relative;
-                }
-                
-                .favorite-item img {
-                    width: 100%;
-                    border-radius: 10px;
-                }
-                
-                .remove-favorite {
-                    position: absolute;
-                    top: 5px;
-                    right: 5px;
-                    background-color: rgba(255, 255, 255, 0.8);
-                    border: none;
-                    border-radius: 50%;
-                    width: 30px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    cursor: pointer;
-                    color: #ff3366;
-                    font-size: 18px;
-                    padding: 0;
-                    margin: 0;
-                }
-                
-                .view-favorites-btn {
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    background: linear-gradient(45deg, #ff97d5, #ffcc00);
-                    border-radius: 50%;
-                    width: 60px;
-                    height: 60px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    cursor: pointer;
-                    box-shadow: 0 5px 15px rgba(255, 151, 213, 0.4);
-                    z-index: 999;
-                    transition: all 0.3s ease;
-                }
-                
-                .view-favorites-btn:hover {
-                    transform: scale(1.1);
-                }
-                
-                .favorite-count {
-                    position: absolute;
-                    top: -5px;
-                    right: -5px;
-                    background-color: #ff3366;
-                    color: white;
-                    border-radius: 50%;
-                    width: 25px;
-                    height: 25px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 14px;
-                    font-weight: bold;
-                }
-                
-                .no-favorites {
-                    text-align: center;
-                    color: #888;
-                    font-style: italic;
-                    margin-top: 50px;
-                }
-        </style>
-    </head>
-    <body>
-        <div class="sparkles" id="sparkles"></div>
-        <div class="container">
-            <h1>Random Anime Image</h1>
-            <p>Click the button for new anime kawaii!</p>
-            <button id="change-image">Summon Image</button>
-            <div id="loading-indicator">Summoning...</div>
-            <div id="image-container">
-                <img id="random-image" src="" alt="Random Anime Image" />
-                <div id="artist-info"></div>
-            </div>
-            <div class="button-group">
-                <button id="download-image" class="download-btn">Download Now</button>
-                <button id="favorite-image" class="favorite-btn">
-                    <span class="heart">♡</span> Favorite
-                </button>
-            </div>
-        </div>
-        
-        <div id="favorites-panel">
-            <div class="favorites-header">
-                <h2>My Favorites</h2>
-                <button class="close-favorites">×</button>
-            </div>
-            <div id="favorites-list"></div>
-        </div>
-        
-        <div class="view-favorites-btn" id="view-favorites">
-            <span class="heart">♥</span>
-            <span class="favorite-count">0</span>
-        </div>
+      button:hover:not(:disabled) {
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 10px 25px rgba(255, 151, 213, 0.5);
+      }
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const button = document.getElementById("change-image");
-                const loadingIndicator = document.getElementById("loading-indicator");
-                const downloadButton = document.getElementById("download-image");
-                const artistInfo = document.getElementById("artist-info");
-                const favoriteButton = document.getElementById("favorite-image");
-                const viewFavoritesBtn = document.getElementById("view-favorites");
-                const favoritesPanel = document.getElementById("favorites-panel");
-                const favoritesList = document.getElementById("favorites-list");
-                const closeFavoritesBtn = document.querySelector(".close-favorites");
-                const favoriteCountDisplay = document.querySelector(".favorite-count");
-                
-                // Load favorites from localStorage
-                let favorites = JSON.parse(localStorage.getItem("animeImageFavorites")) || [];
-                updateFavoriteCount();
-                
-                // Create sparkles
-                createSparkles();
+      button:active:not(:disabled) {
+        transform: translateY(1px);
+        box-shadow: 0 4px 10px rgba(255, 151, 213, 0.3);
+      }
 
-                button.addEventListener("click", function () {
-                    setRandomImage();
+      button:disabled {
+        background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
 
-                    // Add cooldown animation
-                    button.disabled = true;
-                    const cooldown = document.createElement("div");
-                    cooldown.className = "cooldown";
-                    button.appendChild(cooldown);
+      .favorite-btn .heart {
+        display: inline-block;
+        margin-right: 8px;
+        font-size: 20px;
+        transition: transform 0.3s;
+      }
 
-                    setTimeout(() => {
-                        button.disabled = false;
-                        if (cooldown.parentNode === button) {
-                            button.removeChild(cooldown);
-                        }
-                    }, 5000);
-                });
-                
-                downloadButton.addEventListener("click", function() {
-                    const imageUrl = document.getElementById("random-image").src;
-                    if (imageUrl) {
-                        const a = document.createElement("a");
-                        a.href = imageUrl;
-                        a.download = "anime-image.jpg";
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                    }
-                });
-                
-                favoriteButton.addEventListener("click", function() {
-                    const imageUrl = document.getElementById("random-image").src;
-                    const artist = artistInfo.textContent.replace("~by ", "");
-                    
-                    if (imageUrl) {
-                        // Check if already in favorites
-                        const existingIndex = favorites.findIndex(item => item.url === imageUrl);
-                        
-                        if (existingIndex !== -1) {
-                            // Remove from favorites
-                            favorites.splice(existingIndex, 1);
-                            favoriteButton.classList.remove("active");
-                            favoriteButton.querySelector(".heart").textContent = "♡";
-                        } else {
-                            // Add to favorites
-                            favorites.push({
-                                url: imageUrl,
-                                artist: artist,
-                                date: new Date().toISOString()
-                            });
-                            favoriteButton.classList.add("active");
-                            favoriteButton.querySelector(".heart").textContent = "♥";
-                            
-                            // Show animation
-                            const heart = document.createElement("div");
-                            heart.textContent = "♥";
-                            heart.style.position = "absolute";
-                            heart.style.color = "#ff3366";
-                            heart.style.fontSize = "40px";
-                            heart.style.top = "50%";
-                            heart.style.left = "50%";
-                            heart.style.transform = "translate(-50%, -50%)";
-                            heart.style.opacity = "1";
-                            heart.style.transition = "all 1s ease";
-                            
-                            document.getElementById("image-container").appendChild(heart);
-                            
-                            setTimeout(() => {
-                                heart.style.top = "0";
-                                heart.style.opacity = "0";
-                                heart.style.fontSize = "60px";
-                            }, 50);
-                            
-                            setTimeout(() => {
-                                heart.remove();
-                            }, 1000);
-                        }
-                        
-                        // Save to localStorage
-                        localStorage.setItem("animeImageFavorites", JSON.stringify(favorites));
-                        updateFavoriteCount();
-                    }
-                });
-                
-                viewFavoritesBtn.addEventListener("click", function() {
-                    favoritesPanel.classList.add("active");
-                    renderFavorites();
-                });
-                
-                closeFavoritesBtn.addEventListener("click", function() {
-                    favoritesPanel.classList.remove("active");
-                });
-                
-                function updateFavoriteCount() {
-                    favoriteCountDisplay.textContent = favorites.length;
-                    if (favorites.length > 0) {
-                        viewFavoritesBtn.style.display = "flex";
-                    } else {
-                        viewFavoritesBtn.style.display = "none";
-                    }
-                }
-                
-                function renderFavorites() {
-                    favoritesList.innerHTML = '';
-                    
-                    if (favorites.length === 0) {
-                        favoritesList.innerHTML = '<div class="no-favorites">You have no favorites yet</div>';
-                        return;
-                    }
-                    
-                    // Sort by newest first
-                    const sortedFavorites = [...favorites].sort((a, b) => 
-                        new Date(b.date) - new Date(a.date)
-                    );
-                    
-                    sortedFavorites.forEach((item, index) => {
-                        const favoriteItem = document.createElement("div");
-                        favoriteItem.className = "favorite-item";
-                        
-                        const img = document.createElement("img");
-                        img.src = item.url;
-                        img.alt = "Favorite anime image";
-                        
-                        const removeBtn = document.createElement("button");
-                        removeBtn.className = "remove-favorite";
-                        removeBtn.innerHTML = "×";
-                        removeBtn.addEventListener("click", function(e) {
-                            e.stopPropagation();
-                            favorites = favorites.filter(fav => fav.url !== item.url);
-                            localStorage.setItem("animeImageFavorites", JSON.stringify(favorites));
-                            renderFavorites();
-                            updateFavoriteCount();
-                            
-                            // Update favorite button if current image is removed
-                            const currentImageUrl = document.getElementById("random-image").src;
-                            if (currentImageUrl === item.url) {
-                                favoriteButton.classList.remove("active");
-                                favoriteButton.querySelector(".heart").textContent = "♡";
-                            }
-                        });
-                        
-                        favoriteItem.appendChild(img);
-                        favoriteItem.appendChild(removeBtn);
-                        favoritesList.appendChild(favoriteItem);
-                    });
-                }
+      .favorite-btn.active .heart {
+        color: #ff3366;
+        transform: scale(1.2);
+      }
 
-                // Load initial image
-                setRandomImage();
+      .favorite-btn.active {
+        background: linear-gradient(45deg, #ff6eb5, #ffcc00);
+      }
 
-                function setRandomImage() {
-                    // Show loading state
-                    const button = document.getElementById("change-image");
-                    const loadingIndicator = document.getElementById("loading-indicator");
-                    button.classList.add("loading");
-                    loadingIndicator.style.display = "block";
+      .button-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 20px;
+      }
 
-                    // Choose a random category from Nekos API
-                    const categories = ["neko", "waifu", "kitsune", "husbando"];
-                    const randomCategory =
-                        categories[Math.floor(Math.random() * categories.length)];
+      .cooldown {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        transform: translateX(-100%);
+        animation: cooldown 5s linear forwards;
+      }
 
-                    // Fetch image from Nekos API
-                    fetch(`https://nekos.best/api/v2/${randomCategory}`)
-                        .then((response) => response.json())
-                        .then((data) => {
-                            const imageUrl = data.results[0].url;
-                            const artist = data.results[0].artist_name || "Unknown Artist";
+      @keyframes cooldown {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
 
-                            // Display artist info
-                            artistInfo.textContent = `~by ${artist}`;
-                            
-                            // Load the image
-                            const img = new Image();
-                            img.crossOrigin = "Anonymous";
-                            img.onload = function () {
-                                // Update the displayed image
-                                document.getElementById("random-image").src = imageUrl;
+      #loading-indicator {
+        display: none;
+        margin-bottom: 15px;
+        font-style: italic;
+        animation: pulse 1.5s infinite;
+        color: #ff97d5;
+      }
 
-                                // Extract color from image
-                                const color = getAverageColor(img);
-                                
-                                // Create pastel color for background
-                                const pastelColor = makePastel(color);
+      @keyframes pulse {
+        0% {
+          opacity: 0.5;
+          transform: scale(0.98);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+        100% {
+          opacity: 0.5;
+          transform: scale(0.98);
+        }
+      }
 
-                                // Apply color as background
-                                document.body.style.background = `linear-gradient(45deg, rgb(${pastelColor.r}, ${pastelColor.g}, ${pastelColor.b}), rgb(255, 236, 246))`;
+      #image-container {
+        margin-top: 20px;
+        transition: transform 0.5s ease;
+        position: relative;
+      }
 
-                                // Hide loading state
-                                button.classList.remove("loading");
-                                loadingIndicator.style.display = "none";
-                                
-                                // Check if image is in favorites
-                                const isFavorite = favorites.some(item => item.url === imageUrl);
-                                if (isFavorite) {
-                                    favoriteButton.classList.add("active");
-                                    favoriteButton.querySelector(".heart").textContent = "♥";
-                                } else {
-                                    favoriteButton.classList.remove("active");
-                                    favoriteButton.querySelector(".heart").textContent = "♡";
-                                }
-                            };
+      #image-container:hover {
+        transform: scale(1.03);
+      }
 
-                            img.src = imageUrl;
-                        })
-                        .catch((error) => {
-                            console.error("Error fetching image:", error);
-                            loadingIndicator.style.display = "none";
-                            button.classList.remove("loading");
-                        });
-                }
+      img {
+        max-width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(255, 182, 223, 0.4);
+        transition: all 0.5s ease;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+      }
 
-                function getAverageColor(imgEl) {
-                    // Existing color extraction function remains unchanged
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d");
-                    const width = 20;
-                    const height = 20;
+      .loading {
+        opacity: 0.5;
+      }
 
-                    canvas.width = width;
-                    canvas.height = height;
+      h1 {
+        font: 700 4rem "Permanent Marker", cursive;
+        margin-top: 0;
+        font-size: 6rem;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        background-image: linear-gradient(45deg, #ffecf6, #e5f5ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        padding: 10px;
+        border-radius: 10px;
+        transition: background-image 1s ease;
+        display: inline-block;
+      }
 
-                    context.drawImage(imgEl, 0, 0, width, height);
+      p {
+        color: #666;
+        margin-bottom: 25px;
+      }
 
-                    let data;
-                    try {
-                        data = context.getImageData(0, 0, width, height).data;
-                    } catch (e) {
-                        return { r: 100, g: 100, b: 100 };
-                    }
+      .sparkles {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        top: 0;
+        left: 0;
+      }
 
-                    let r = 0, g = 0, b = 0;
-                    let count = 0;
+      .sparkle {
+        position: absolute;
+        background-color: #ffc0e0;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        opacity: 0;
+        filter: blur(1px);
+        box-shadow: 0 0 8px 2px rgba(255, 220, 240, 0.8);
+        animation: sparkle-animation 3s infinite;
+      }
 
-                    for (let i = 0; i < data.length; i += 16) {
-                        r += data[i];
-                        g += data[i + 1];
-                        b += data[i + 2];
-                        count++;
-                    }
+      @keyframes sparkle-animation {
+        0% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+      }
 
-                    return {
-                        r: Math.floor(r / count),
-                        g: Math.floor(g / count),
-                        b: Math.floor(b / count),
-                    };
-                }
-                
-                // Function to make colors pastel and cute
-                function makePastel(color) {
-                    return {
-                        r: Math.min(255, Math.max(200, color.r * 0.9 + 100)),
-                        g: Math.min(255, Math.max(200, color.g * 0.9 + 100)),
-                        b: Math.min(255, Math.max(210, color.b * 0.9 + 100))
-                    };
-                }
-                
-                // Create sparkle effect
-                function createSparkles() {
-                    const sparklesContainer = document.getElementById("sparkles");
-                    const sparkleCount = 40;
-                    
-                    for (let i = 0; i < sparkleCount; i++) {
-                        const sparkle = document.createElement("div");
-                        sparkle.classList.add("sparkle");
-                        sparkle.style.left = `${Math.random() * 100}%`;
-                        sparkle.style.top = `${Math.random() * 100}%`;
-                        sparkle.style.animationDelay = `${Math.random() * 2}s`;
-                        sparklesContainer.appendChild(sparkle);
-                    }
-                }
+      #artist-info {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background-color: #ffffffcc;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        color: #777;
+        box-shadow: 0 2px 10px rgba(255, 151, 213, 0.3);
+        border: 1px solid #ffcce9;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      #artist-info:hover {
+        background-color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 151, 213, 0.5);
+      }
+
+      #favorites-panel {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 0;
+        background-color: white;
+        box-shadow: -5px 0 20px rgba(255, 151, 213, 0.3);
+        z-index: 1000;
+        overflow-y: auto;
+        transition: width 0.3s ease;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      #favorites-panel.active {
+        display: block;
+        width: 100%;
+        max-width: 320px;
+      }
+
+      .favorites-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .close-favorites {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #ff97d5;
+        padding: 0;
+        margin: 0;
+      }
+
+      .favorite-item {
+        margin-bottom: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(255, 151, 213, 0.2);
+        position: relative;
+      }
+
+      .favorite-item img {
+        width: 100%;
+        border-radius: 10px;
+      }
+
+      .remove-favorite {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #ff3366;
+        font-size: 18px;
+        padding: 0;
+        margin: 0;
+      }
+
+      .view-favorites-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(45deg, #ff97d5, #ffcc00);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(255, 151, 213, 0.4);
+        z-index: 999;
+        transition: all 0.3s ease;
+      }
+
+      .view-favorites-btn:hover {
+        transform: scale(1.1);
+      }
+
+      .favorite-count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #ff00402e;
+        color: white;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .no-favorites {
+        text-align: center;
+        color: #888;
+        font-style: italic;
+        margin-top: 50px;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 20px 15px;
+          margin: 10px auto;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        p {
+          font-size: 14px;
+          margin-bottom: 15px;
+        }
+
+        button {
+          padding: 10px 20px;
+          font-size: 14px;
+        }
+
+        .button-group {
+          gap: 8px;
+        }
+
+        .button-group button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sparkles" id="sparkles"></div>
+    <div class="container">
+      <h1 class="gradient-text" id="title">AniSpin</h1>
+      <div id="loading-indicator">Summoning...</div>
+      <div id="image-container">
+        <img id="random-image" src="" alt="Random Anime Image" />
+        <div id="artist-info"></div>
+      </div>
+      <p>Click the button for new anime kawaii!</p>
+      <div class="button-group">
+        <button id="download-image" class="download-btn">Download Now</button>
+        <button id="change-image">Summon Image</button>
+        <button id="favorite-image" class="favorite-btn">
+          <span class="heart">♡</span> Favorite
+        </button>
+      </div>
+    </div>
+
+    <div id="favorites-panel">
+      <div class="favorites-header">
+        <h2>My Favorites</h2>
+        <button class="close-favorites">×</button>
+      </div>
+      <div id="favorites-list"></div>
+    </div>
+
+    <div class="view-favorites-btn" id="view-favorites">
+      <span class="heart">♥</span>
+      <span class="favorite-count">0</span>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const button = document.getElementById("change-image");
+        const loadingIndicator = document.getElementById("loading-indicator");
+        const downloadButton = document.getElementById("download-image");
+        const artistInfo = document.getElementById("artist-info");
+        const favoriteButton = document.getElementById("favorite-image");
+        const viewFavoritesBtn = document.getElementById("view-favorites");
+        const favoritesPanel = document.getElementById("favorites-panel");
+        const favoritesList = document.getElementById("favorites-list");
+        const closeFavoritesBtn = document.querySelector(".close-favorites");
+        const favoriteCountDisplay = document.querySelector(".favorite-count");
+        const titleElement = document.getElementById("title");
+
+        // Load favorites from localStorage
+        let favorites =
+          JSON.parse(localStorage.getItem("animeImageFavorites")) || [];
+        updateFavoriteCount();
+
+        // Create sparkles
+        createSparkles();
+
+        button.addEventListener("click", function () {
+          setRandomImage();
+
+          // Add cooldown animation
+          button.disabled = true;
+          const cooldown = document.createElement("div");
+          cooldown.className = "cooldown";
+          button.appendChild(cooldown);
+
+          setTimeout(() => {
+            button.disabled = false;
+            if (cooldown.parentNode === button) {
+              button.removeChild(cooldown);
+            }
+          }, 5000);
+        });
+
+        downloadButton.addEventListener("click", function () {
+          const imageUrl = document.getElementById("random-image").src;
+          if (imageUrl) {
+            const a = document.createElement("a");
+            a.href = imageUrl;
+            a.download = "anime-image.jpg";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }
+        });
+
+        favoriteButton.addEventListener("click", function () {
+          const imageUrl = document.getElementById("random-image").src;
+          const artist = artistInfo.textContent.replace("~by ", "");
+
+          if (imageUrl) {
+            // Check if already in favorites
+            const existingIndex = favorites.findIndex(
+              (item) => item.url === imageUrl
+            );
+
+            if (existingIndex !== -1) {
+              // Remove from favorites
+              favorites.splice(existingIndex, 1);
+              favoriteButton.classList.remove("active");
+              favoriteButton.querySelector(".heart").textContent = "♡";
+            } else {
+              // Add to favorites
+              favorites.push({
+                url: imageUrl,
+                artist: artist,
+                date: new Date().toISOString(),
+              });
+              favoriteButton.classList.add("active");
+              favoriteButton.querySelector(".heart").textContent = "♥";
+
+              // Show animation
+              const heart = document.createElement("div");
+              heart.textContent = "♥";
+              heart.style.position = "absolute";
+              heart.style.color = "#ff3366";
+              heart.style.fontSize = "70px";
+              heart.style.top = "50%";
+              heart.style.left = "50%";
+              heart.style.transform = "translate(-50%, -50%)";
+              heart.style.opacity = "1";
+              heart.style.transition = "all 1s ease";
+
+              document.getElementById("image-container").appendChild(heart);
+
+              setTimeout(() => {
+                heart.style.top = "0";
+                heart.style.opacity = "0";
+                heart.style.fontSize = "80px";
+              }, 50);
+
+              setTimeout(() => {
+                heart.remove();
+              }, 1000);
+            }
+
+            // Save to localStorage
+            localStorage.setItem(
+              "animeImageFavorites",
+              JSON.stringify(favorites)
+            );
+            updateFavoriteCount();
+          }
+        });
+
+        viewFavoritesBtn.addEventListener("click", function () {
+          favoritesPanel.classList.add("active");
+          renderFavorites();
+        });
+
+        closeFavoritesBtn.addEventListener("click", function () {
+          favoritesPanel.classList.remove("active");
+        });
+
+        function updateFavoriteCount() {
+          favoriteCountDisplay.textContent = favorites.length;
+          if (favorites.length > 0) {
+            viewFavoritesBtn.style.display = "flex";
+          } else {
+            viewFavoritesBtn.style.display = "none";
+          }
+        }
+
+        function renderFavorites() {
+          favoritesList.innerHTML = "";
+
+          if (favorites.length === 0) {
+            favoritesList.innerHTML =
+              '<div class="no-favorites">You have no favorites yet</div>';
+            return;
+          }
+
+          // Sort by newest first
+          const sortedFavorites = [...favorites].sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+
+          sortedFavorites.forEach((item, index) => {
+            const favoriteItem = document.createElement("div");
+            favoriteItem.className = "favorite-item";
+
+            const img = document.createElement("img");
+            img.src = item.url;
+            img.alt = "Favorite anime image";
+
+            const removeBtn = document.createElement("button");
+            removeBtn.className = "remove-favorite";
+            removeBtn.innerHTML = "×";
+            removeBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              favorites = favorites.filter((fav) => fav.url !== item.url);
+              localStorage.setItem(
+                "animeImageFavorites",
+                JSON.stringify(favorites)
+              );
+              renderFavorites();
+              updateFavoriteCount();
+
+              // Update favorite button if current image is removed
+              const currentImageUrl =
+                document.getElementById("random-image").src;
+              if (currentImageUrl === item.url) {
+                favoriteButton.classList.remove("active");
+                favoriteButton.querySelector(".heart").textContent = "♡";
+              }
             });
-        </script>
-    </body>
+
+            favoriteItem.appendChild(img);
+            favoriteItem.appendChild(removeBtn);
+            favoritesList.appendChild(favoriteItem);
+          });
+        }
+
+        // Load initial image
+        setRandomImage();
+
+        function setRandomImage() {
+          // Show loading state
+          button.classList.add("loading");
+          loadingIndicator.style.display = "block";
+
+          // Choose a random category from Nekos API
+          const categories = [
+            "neko",
+            "waifu",
+            "kitsune",
+            "husbando",
+            "wallpapers",
+          ];
+          const randomCategory =
+            categories[Math.floor(Math.random() * categories.length)];
+
+          // Fetch image from Nekos API
+          fetch(`https://nekos.best/api/v2/${randomCategory}`)
+            .then((response) => response.json())
+            .then((data) => {
+              const imageUrl = data.results[0].url;
+              const artist = data.results[0].artist_name || "Unknown Artist";
+
+              // Display artist info
+              artistInfo.textContent = `~by ${artist}`;
+
+              // Load the image
+              const img = new Image();
+              img.crossOrigin = "Anonymous";
+              img.onload = function () {
+                // Update the displayed image
+                document.getElementById("random-image").src = imageUrl;
+
+                // Extract color from image
+                const color = getAverageColor(img);
+
+                // Create more vibrant color for background
+                const vibrantColor = enhanceColor(color);
+
+                // Apply color as background with more contrast
+                document.body.style.background = `linear-gradient(45deg, rgb(${vibrantColor.r}, ${vibrantColor.g}, ${vibrantColor.b}), #f0f8ff)`;
+
+                // Update h1 background to match body background
+                titleElement.style.backgroundImage = `linear-gradient(45deg, rgb(${vibrantColor.r}, ${vibrantColor.g}, ${vibrantColor.b}), #f0f8ff)`;
+
+                // Hide loading state
+                button.classList.remove("loading");
+                loadingIndicator.style.display = "none";
+
+                // Check if image is in favorites
+                const isFavorite = favorites.some(
+                  (item) => item.url === imageUrl
+                );
+                if (isFavorite) {
+                  favoriteButton.classList.add("active");
+                  favoriteButton.querySelector(".heart").textContent = "♥";
+                } else {
+                  favoriteButton.classList.remove("active");
+                  favoriteButton.querySelector(".heart").textContent = "♡";
+                }
+              };
+
+              img.src = imageUrl;
+            })
+            .catch((error) => {
+              console.error("Error fetching image:", error);
+              loadingIndicator.style.display = "none";
+              button.classList.remove("loading");
+            });
+        }
+
+        function getAverageColor(imgEl) {
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          const width = 40; // Increased sample size
+          const height = 40;
+
+          canvas.width = width;
+          canvas.height = height;
+
+          context.drawImage(imgEl, 0, 0, width, height);
+
+          let data;
+          try {
+            data = context.getImageData(0, 0, width, height).data;
+          } catch (e) {
+            return { r: 100, g: 100, b: 100 };
+          }
+
+          let r = 0,
+            g = 0,
+            b = 0;
+          let count = 0;
+
+          for (let i = 0; i < data.length; i += 8) {
+            // Sample more pixels
+            r += data[i];
+            g += data[i + 1];
+            b += data[i + 2];
+            count++;
+          }
+
+          return {
+            r: Math.floor(r / count),
+            g: Math.floor(g / count),
+            b: Math.floor(b / count),
+          };
+        }
+
+        // Function to make colors more vibrant for better visibility
+        function enhanceColor(color) {
+          // Make colors more vibrant and distinct
+          return {
+            r: Math.min(255, Math.floor(color.r * 1.2)),
+            g: Math.min(255, Math.floor(color.g * 1.1)),
+            b: Math.min(255, Math.floor(color.b * 1.3)),
+          };
+        }
+
+        // Create sparkle effect with more visible sparkles
+        function createSparkles() {
+          const sparklesContainer = document.getElementById("sparkles");
+          const sparkleCount = 60; // Increased number of sparkles
+
+          for (let i = 0; i < sparkleCount; i++) {
+            const sparkle = document.createElement("div");
+            sparkle.classList.add("sparkle");
+            sparkle.style.left = `${Math.random() * 100}%`;
+            sparkle.style.top = `${Math.random() * 100}%`;
+            sparkle.style.animationDelay = `${Math.random() * 3}s`;
+            sparkle.style.width = `${3 + Math.random() * 4}px`; // Varied sizes
+            sparkle.style.height = sparkle.style.width;
+            sparklesContainer.appendChild(sparkle);
+          }
+        }
+      });
+    </script>
+  </body>
 </html>
